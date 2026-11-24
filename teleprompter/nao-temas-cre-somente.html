@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teleprompter — Não Temas, Crê Somente</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#08090c;color:#f5f5f7;font-family:'Segoe UI',Roboto,sans-serif;overflow:hidden}
+#palco{height:100vh;overflow-y:scroll;scroll-behavior:smooth;padding:44vh 7vw 60vh;}
+.linha{font-size:clamp(30px,6.6vw,64px);line-height:1.45;margin:0 0 1.15em;
+  font-weight:600;letter-spacing:-.01em}
+.pausa{color:#d4af37;font-size:.55em;letter-spacing:.28em;opacity:.85;margin:.9em 0}
+.marca{color:#d4af37}
+#barra{position:fixed;left:0;right:0;bottom:0;background:#101218;border-top:1px solid #262932;
+  padding:12px 16px;display:flex;gap:10px;align-items:center;font-size:14px;color:#9aa0ae}
+button{background:#d4af37;color:#08090c;border:0;border-radius:9px;padding:11px 17px;
+  font-weight:800;font-size:15px;cursor:pointer}
+button.sec{background:#22262f;color:#e8e8ea}
+#sec{margin-left:auto}
+#guia{position:fixed;top:44vh;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,#d4af3755,transparent);pointer-events:none}
+</style></head><body>
+<div id="guia"></div>
+<div id="palco">
+<div class="parte" data-nome="Abertura"><h2 style="font-size:15px;letter-spacing:.3em;color:#d4af37;margin:0 0 1.4em">ABERTURA</h2>
+<div class="linha">Chegaram os homens e disseram:</div>
+<div class="linha">“A tua filha já está morta. Não incomode mais o Mestre.”</div>
+<div class="linha pausa">· · ·</div>
+<div class="linha">Jesus ouviu a notícia.</div>
+<div class="linha">O texto diz que ele ouviu.</div>
+<div class="linha">E respondeu no meio dela:</div>
+<div class="linha">“Não temas. Crê somente.”</div>
+<div class="linha pausa">· · ·</div>
+<div class="linha">Repara: ele não corrigiu o mensageiro.</div>
+<div class="linha">Não disse “ela está dormindo” naquele momento.</div>
+<div class="linha">Ele disse outra coisa sobre outra coisa.</div>
+<div class="linha">Hoje eu quero te falar sobre a notícia que ocupou toda a sua fé.</div>
+</div><div class="parte" data-nome="Fecho"><h2 style="font-size:15px;letter-spacing:.3em;color:#d4af37;margin:2.4em 0 1.4em">FECHO</h2>
+<div class="linha">Não temas.</div>
+<div class="linha">Crê somente.</div>
+<div class="linha">Duas ordens curtas.</div>
+<div class="linha">E nenhuma delas pede que você entenda antes.</div>
+<div class="linha pausa">· · ·</div>
+<div class="linha">Qual notícia você recebeu que ainda está ocupando toda a sua fé?</div>
+<div class="linha">Escreve aqui embaixo. Eu vou orar com você.</div>
+</div>
+</div>
+<div id="barra">
+  <button onclick="rolar()">▶ Rolar</button>
+  <button class="sec" onclick="parar()">⏸</button>
+  <button class="sec" onclick="reset()">⟲</button>
+  <button class="sec" onclick="vel(-1)">−</button>
+  <span id="velTxt">2.0</span>
+  <button class="sec" onclick="vel(1)">+</button>
+  <span id="sec">Abertura</span>
+</div>
+<script>
+let speed=2.0, rodando=false, timer=null;
+const palco=document.getElementById('palco');
+const partes=[...document.querySelectorAll('.parte')];
+document.getElementById('sec').textContent=partes[0].dataset.nome;
+function passo(){
+  if(!rodando) return;
+  palco.scrollTop += speed;
+  const meio = palco.scrollTop + window.innerHeight*0.44;
+  for(const p of partes){
+    if(meio >= p.offsetTop - 40) document.getElementById('sec').textContent = p.dataset.nome;
+  }
+  if(palco.scrollTop + palco.clientHeight >= palco.scrollHeight - 2){ parar(); }
+  timer = requestAnimationFrame(passo);
+}
+function rolar(){ if(rodando) return; rodando=true; passo(); }
+function parar(){ rodando=false; cancelAnimationFrame(timer); }
+function reset(){ parar(); palco.scrollTop=0; }
+function vel(d){ speed=Math.max(0.5,Math.min(9,speed+d*0.5));
+  document.getElementById('velTxt').textContent=speed.toFixed(1); }
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'){e.preventDefault(); rodando?parar():rolar();}
+  if(e.code==='ArrowUp')vel(1); if(e.code==='ArrowDown')vel(-1);
+});
+palco.addEventListener('click',()=>rodando?parar():rolar());
+</script></body></html>
